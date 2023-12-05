@@ -1,26 +1,24 @@
 # Fall2023_final_project
 
-Simple overview of use/purpose.
+For my project I plan to make a game like Agar.io I loved that game as a kid so I plan to recreate it here.
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
+I found a youtube series that I will be using to guide me throughout the process. I won't just make a simple agar.io I will add my own things onto it and I plan to add weapons like a sword.
 
 ## Getting Started
 
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
+I have downloaded pygame and created a reposetory in github.
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+For a modification to my file I had to stop hiding folders that .git could appear
 
 ### Executing program
 
-* How to run the program
+* Press play button and control player (the big cirle) eat little squares and every time you eat it you get bigger. There are enemies which are mobs and they try killing you by running into you.
 * Step-by-step bullets
 ```
 code blocks for commands
@@ -28,17 +26,16 @@ code blocks for commands
 
 ## Help
 
-Any advise for common problems or issues.
+close the game to restart
 ```
 command to run if program contains helper info
 ```
 
 ## Authors
 
-Contributors names and contact info
-
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
+https://www.youtube.com/@procrastinationnation77
+ChatGPT
+Chris Cozort
 
 ## Version History
 
@@ -50,7 +47,7 @@ ex. [@DomPizzie](https://twitter.com/dompizzie)
 
 ## License
 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+This project is licensed under the [MIGUEL ZALAPA] License - see the LICENSE.md file for details
 
 ## Acknowledgments
 
@@ -64,4 +61,3 @@ Inspiration, code snippets, etc.
 * [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
 * [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
 
-i hate dis class
