@@ -40,3 +40,22 @@ frame_rate =30
 start_time = 0
 frame_rate_delay = 0.5
 
+#class to make our cells from
+class Cell():
+    def __init__(self, x, y, color, radius, name):
+        self.name = name
+        self.radius = radius
+        self.color = color
+        self.status = random.randint(1, 8)
+        self.x_pos = x
+        self.y_pos = y
+    def wander(self):
+        pass
+    def collide_check(self, player):
+        pass
+    def draw(self, surface, x, y):
+        pygame.draw.circle(surface, self.color, (x, y), int(self.radius))
+        if self.name == "Bot" or self.name == "Player":
+            text = FONT.render(str(round(self.radius)), False, text_color)
+            
+
