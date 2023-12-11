@@ -52,7 +52,14 @@ class Cell():
     def wander(self):
         pass
     def collide_check(self, player):
-        pass
+        global cells, bots, game_over
+        for cell in cells:
+            if math.sqrt(((player.x_pos - (WIDTH/2) + cell.x_pos) ** 2 + (player.y_pos - (HEIGHT/2) + cell.y_pos) ** 2)) <= cell.radius + player.radius and cell.radius <= player.radius:
+                cells.remove(cell)
+                player.radius += 0.25
+                if respawn_cells:
+                    new_cell = Cell(random.randint(-map_size, map_size), random.randint(-map_size, map_size), (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), 5, "cell") 
+                    cells.append(new_cell)
     def draw(self, surface, x, y):
         pygame.draw.circle(surface, self.color, (x, y), int(self.radius))
         if self.name == "Bot" or self.name == "Player":
@@ -81,7 +88,7 @@ while True:
     for cell in cells:
         cell.draw(SCREEN, cell.x_pos + player_cell.x_pos, cell.y_pos + player_cell.y_pos)
     if game_over == True:
-        text = BIGFONT.render("You losg!", False, text_color)
+        text = BIGFONT.render("You lose!", False, text_color)
         SCREEN.blit(text, ((WIDTH/2) - 150, (HEIGHT/2)-40))
     else:
         player_cell.draw(SCREEN, (WIDTH/2), (HEIGHT/2))
