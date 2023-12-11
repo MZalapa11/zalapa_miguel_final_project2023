@@ -92,6 +92,8 @@ while True:
         SCREEN.blit(text, ((WIDTH/2) - 150, (HEIGHT/2)-40))
     else:
         player_cell.draw(SCREEN, (WIDTH/2), (HEIGHT/2))
+    text = FONT.render("Score: " + str(round(player_cell.radius)), False, text_color)
+    SCREEN.blit(text, (20, 20))
     WIDTH, HEIGHT = pygame.display.get_surface().get_size()
     pygame.display.update()
     CLOCK.tick(FPS)
