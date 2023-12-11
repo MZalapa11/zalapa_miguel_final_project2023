@@ -77,7 +77,13 @@ while True:
         player_cell.collide_check(player_cell)
     for cell in cells:
         cell.draw(SCREEN, cell.x_pos, cell.y_pos)
+    if game_over == True:
+        text = BIGFONT.render("You losg!", False, text_color)
+        SCREEN.blit(text, ((WIDTH/2) - 150, (HEIGHT/2)-40))
+    else:
+        player_cell.draw(SCREEN, (WIDTH/2), (HEIGHT/2))
     WIDTH, HEIGHT = pygame.display.get_surface().get_size()
     pygame.display.update()
     CLOCK.tick(FPS)
     SCREEN.fill(background_color)
+
