@@ -88,20 +88,34 @@ class Cell():
         if self.name == "Bot" or self.name == "Player" or self.name == "cell":
             text = FONT.render(str(round(self.radius)), False, text_color)
 class Bot(Cell):
-    def __init__(self, x, y, radius):
-        super().__init__(x, y, (0, 255, 0), radius, "Bot")
-#class to add mobs
+    def __init__(self, x, y, radius, name):
+        super().__init__(x, y, (0, 255, 0), radius, name)
+
+    def wander(self, player_cell):
+        direction_x = player_cell.x_pos - self.x_pos
+        direction_y = player_cell.y_pos - self.y_pos
+        distance = math.sqrt(direction_x**2 + direction_y**2)
+
+        if distance != 0:
+            normalized_direction_x = direction_x / distance
+            normalized_direction_y = direction_y / distance
+
+            # Adjust the bot's position based on the normalized direction vector
+            self.x_pos += normalized_direction_x * 3  # Adjust the factor for speed
+            self.y_pos += normalized_direction_y * 3  # Adjust the factor for speed
+# class to add mobs
 for i in range(cell_count):
     new_cell = Cell(random.randint(-map_size, map_size), random.randint(-map_size, map_size), (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), 5, "cell")
     cells.append(new_cell)
 
 player_cell = Cell(0, 0, player_color, spawn_size, "Player")
-bots = [Bot(random.randint(-map_size, map_size), random.randint(-map_size, map_size), random.randint(bots_min_size, bots_max_size)) for _ in range(bot_count)]
+cells = [Cell(random.randint(-map_size, map_size), random.randint(-map_size, map_size), (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), 5, "cell") for _ in range(cell_count)]
+bots = [Bot(random.randint(-map_size, map_size), random.randint(-map_size, map_size), random.randint(bots_min_size, bots_max_size), "Bot") for _ in range(bot_count)]
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
-            sys.exit
+            sys.exit()
         if event.type == MOUSEMOTION and game_over == False:
             mouse_x, mouse_y = event.pos
         else:
@@ -109,15 +123,15 @@ while True:
             mouse_y = HEIGHT/2
     if not game_over:
         player_cell.collide_check(player_cell)
-    player_cell.x_pos += round(-((mouse_x - (WIDTH/2)) / player_cell.radius/2 ))
-    player_cell.y_pos += round(-((mouse_y - (HEIGHT/2)) / player_cell.radius/2 ))
+        player_cell.x_pos += round(-((mouse_x - (WIDTH/2)) / player_cell.radius/2 ))
+        player_cell.y_pos += round(-((mouse_y - (HEIGHT/2)) / player_cell.radius/2 ))
 
     for cell in cells:
         cell.draw(SCREEN, cell.x_pos + player_cell.x_pos, cell.y_pos + player_cell.y_pos)
     for bot in bots:
-        bot.wander()
+        bot.wander(player_cell)
         bot.collide_check(player_cell)
-        bot.draw(SCREEN, bot.x_pos + player_cell.x_pos, bot.y_pos + player_cell.y_pos)
+        bot.draw(SCREEN, bot.x_pos, bot.y_pos)
     if game_over == True:
         text = BIGFONT.render("You lose!", False, text_color)
         SCREEN.blit(text, ((WIDTH/2) - 150, (HEIGHT/2)-40))
