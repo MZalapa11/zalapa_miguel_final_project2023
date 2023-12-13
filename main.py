@@ -28,7 +28,7 @@ background_color = (0, 0, 0)
 text_color = (255, 255, 255)
 
 FONT = pygame.font.Font("freesansbold.ttf", 32)
-FONT = pygame.font.Font("freesansbold.ttf", 72)
+BIGFONT = pygame.font.Font("freesansbold.ttf", 72)
 WIDTH = 1280
 HEIGHT = 720
 cells = []
@@ -50,7 +50,30 @@ class Cell():
         self.x_pos = x
         self.y_pos = y
     def wander(self):
-        pass
+        randomize = random.randint(1, round(self.radius))
+        if randomize == 1:
+            self.status = random.randint(1,8)
+        
+        if self.status == 1:
+            self.y_pos += 300 / self.radius
+        elif self.status == 2:
+            self.x_pos += 150 / self.radius
+            self.y_pos += 150 / self.radius
+        elif self.status == 3:
+            self.x_pos += 300 / self.radius
+        elif self.status == 4:
+            self.x_pos += 150 / self.radius
+            self.y_pos -= 150 / self.radius
+        elif self.status == 5:
+            self.y_pos -= 300 / self.radius
+        elif self.status == 6:
+            self.x_pos -= 150 / self.radius
+            self.y_pos -= 150 / self.radius
+        elif self.status == 7:
+            self.x_pos -= 300 / self.radius
+        elif self.status == 8:
+            self.x_pos -= 150 / self.radius
+            self.y_pos += 150 / self.radius
     def collide_check(self, player):
         global cells, bots, game_over
         for cell in cells:
@@ -62,14 +85,18 @@ class Cell():
                     cells.append(new_cell)
     def draw(self, surface, x, y):
         pygame.draw.circle(surface, self.color, (x, y), int(self.radius))
-        if self.name == "Bot" or self.name == "Player":
+        if self.name == "Bot" or self.name == "Player" or self.name == "cell":
             text = FONT.render(str(round(self.radius)), False, text_color)
+class Bot(Cell):
+    def __init__(self, x, y, radius):
+        super().__init__(x, y, (0, 255, 0), radius, "Bot")
+#class to add mobs
 for i in range(cell_count):
     new_cell = Cell(random.randint(-map_size, map_size), random.randint(-map_size, map_size), (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), 5, "cell")
     cells.append(new_cell)
 
 player_cell = Cell(0, 0, player_color, spawn_size, "Player")
-
+bots = [Bot(random.randint(-map_size, map_size), random.randint(-map_size, map_size), random.randint(bots_min_size, bots_max_size)) for _ in range(bot_count)]
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -87,6 +114,10 @@ while True:
 
     for cell in cells:
         cell.draw(SCREEN, cell.x_pos + player_cell.x_pos, cell.y_pos + player_cell.y_pos)
+    for bot in bots:
+        bot.wander()
+        bot.collide_check(player_cell)
+        bot.draw(SCREEN, bot.x_pos + player_cell.x_pos, bot.y_pos + player_cell.y_pos)
     if game_over == True:
         text = BIGFONT.render("You lose!", False, text_color)
         SCREEN.blit(text, ((WIDTH/2) - 150, (HEIGHT/2)-40))
@@ -94,8 +125,8 @@ while True:
         player_cell.draw(SCREEN, (WIDTH/2), (HEIGHT/2))
     text = FONT.render("Score: " + str(round(player_cell.radius)), False, text_color)
     SCREEN.blit(text, (20, 20))
+    counter += 1
     WIDTH, HEIGHT = pygame.display.get_surface().get_size()
     pygame.display.update()
     CLOCK.tick(FPS)
     SCREEN.fill(background_color)
-
