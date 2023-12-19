@@ -16,11 +16,11 @@ CLOCK = pygame.time.Clock()
 pygame.display.set_caption("Agar.io")
 
 cell_count = 2000
-bot_count = 20
+bot_count = 30
 map_size = 2000
 spawn_size = 25
-bots_min_size = 25
-bots_max_size = 250
+bots_min_size = 15
+bots_max_size = 25
 respawn_cells = True
 respawn_bots = False
 player_color = (255, 0, 0)
@@ -87,6 +87,17 @@ class Cell():
         pygame.draw.circle(surface, self.color, (x, y), int(self.radius))
         if self.name == "Bot" or self.name == "Player" or self.name == "cell":
             text = FONT.render(str(round(self.radius)), False, text_color)
+# New class for horizontally moving mobs
+class HorizontalMob(Cell):
+    def __init__(self, y, color, speed, name):
+        x = random.randint(-map_size, map_size)
+        super().__init__(x, y, color, 10, name)  # Adjust the radius and other parameters as needed
+        self.speed = speed
+    def move(self):
+        self.x_pos += self.speed
+# Create a list to store horizontal mobs
+horizontal_mobs = [HorizontalMob(random.randint(-map_size, map_size), (0, 0, 255), 2, "HorizontalMob") for _ in range(45)]
+
 class Bot(Cell):
     def __init__(self, x, y, radius, name):
         super().__init__(x, y, (0, 255, 0), radius, name)
@@ -121,22 +132,43 @@ while True:
         else:
             mouse_x = WIDTH/2
             mouse_y = HEIGHT/2
+    
     if not game_over:
+        # Check for collisions with cells
         player_cell.collide_check(player_cell)
-        player_cell.x_pos += round(-((mouse_x - (WIDTH/2)) / player_cell.radius/2 ))
-        player_cell.y_pos += round(-((mouse_y - (HEIGHT/2)) / player_cell.radius/2 ))
+
+        # Check for collisions with horizontally moving mobs
+        for mob in horizontal_mobs:
+            distance = math.sqrt((player_cell.x_pos - mob.x_pos)**2 + (player_cell.y_pos - mob.y_pos)**2)
+            if distance < player_cell.radius + mob.radius:
+                game_over = True
+
+        # Update player position
+        player_cell.x_pos += round(-((mouse_x - (WIDTH/2)) / player_cell.radius/2))
+        player_cell.y_pos += round(-((mouse_y - (HEIGHT/2)) / player_cell.radius/2))
+
+        # Update and draw horizontally moving mobs
+        for mob in horizontal_mobs:
+            mob.move()
+            mob.wander()
+            
+            # Check for collisions with the player
+            distance = math.sqrt((player_cell.x_pos - mob.x_pos)**2 + (player_cell.y_pos - mob.y_pos)**2)
+            if distance < player_cell.radius + mob.radius:
+                game_over = True
+
+            mob.draw(SCREEN, mob.x_pos + player_cell.x_pos, mob.y_pos + player_cell.y_pos)
 
     for cell in cells:
         cell.draw(SCREEN, cell.x_pos + player_cell.x_pos, cell.y_pos + player_cell.y_pos)
-    for bot in bots:
-        bot.wander(player_cell)
-        bot.collide_check(player_cell)
-        bot.draw(SCREEN, bot.x_pos, bot.y_pos)
-    if game_over == True:
+
+    if game_over:
         text = BIGFONT.render("You lose!", False, text_color)
-        SCREEN.blit(text, ((WIDTH/2) - 150, (HEIGHT/2)-40))
+        SCREEN.blit(text, ((WIDTH/2) - 150, (HEIGHT/2) - 40))
+
     else:
         player_cell.draw(SCREEN, (WIDTH/2), (HEIGHT/2))
+    
     text = FONT.render("Score: " + str(round(player_cell.radius)), False, text_color)
     SCREEN.blit(text, (20, 20))
     counter += 1
