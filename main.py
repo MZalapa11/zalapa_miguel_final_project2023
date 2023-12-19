@@ -5,6 +5,11 @@ I want my main player to kill mobs with a sword
 Add a sword
 Mobs that attack my player
 My player dies when the mobs run into him
+My player wins when he reaches 30 points
+Sources: 
+https://www.youtube.com/@procrastinationnation77
+Chat.gpt
+Chris Cozort
 '''
 import pygame, sys, random, math, time
 from pygame.locals import*
@@ -147,6 +152,10 @@ while True:
         player_cell.x_pos += round(-((mouse_x - (WIDTH/2)) / player_cell.radius/2))
         player_cell.y_pos += round(-((mouse_y - (HEIGHT/2)) / player_cell.radius/2))
 
+        # Check if the player's score has reached 50 points
+        if player_cell.radius >= 30:
+            game_over = True
+
         # Update and draw horizontally moving mobs
         for mob in horizontal_mobs:
             mob.move()
@@ -163,8 +172,14 @@ while True:
         cell.draw(SCREEN, cell.x_pos + player_cell.x_pos, cell.y_pos + player_cell.y_pos)
 
     if game_over:
-        text = BIGFONT.render("You lose!", False, text_color)
-        SCREEN.blit(text, ((WIDTH/2) - 150, (HEIGHT/2) - 40))
+        if player_cell.radius >= 30:
+            text = BIGFONT.render("You Win!", True, text_color)
+            text_rect = text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
+            SCREEN.blit(text, text_rect)
+        else:
+            text = BIGFONT.render("You Suck", True, text_color)
+            text_rect = text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
+            SCREEN.blit(text, text_rect)
 
     else:
         player_cell.draw(SCREEN, (WIDTH/2), (HEIGHT/2))
